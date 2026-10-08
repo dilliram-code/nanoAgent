@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Natural AI Assistant • Autonomous Planner & Tool Pipeline</title>
+  <meta name="description" content="Next-Generation AI Assistant demonstrating the Planner -> Tool -> Assistant architecture with real-time pipeline telemetry." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
+</head>
+<body class="dark-theme">
+  <!-- Dynamic Ambient Background with Glowing Mesh Orbs -->
+  <div class="ambient-background" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Main Application Container -->
+  <div class="app-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="navbar glass-card">
+      <div class="navbar-left">
+        <div class="brand-badge">
+          <div class="brand-avatar">
+            <i class="ph-bold ph-sparkle"></i>
+            <div class="avatar-glow"></div>
+          </div>
+          <div class="brand-info">
+            <h1 class="brand-title">Natural AI <span class="gradient-text">Agent</span></h1>
+            <div class="brand-subtitle">
+              <span class="pulse-dot"></span>
+              <span id="systemStatusText">Pipeline Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-center hide-on-mobile">
+        <div class="pipeline-capsule">
+          <span class="capsule-step"><i class="ph-bold ph-brain"></i> Planner</span>
+          <i class="ph-bold ph-arrow-right capsule-arrow"></i>
+          <span class="capsule-step"><i class="ph-bold ph-wrench"></i> Tool</span>
+          <i class="ph-bold ph-arrow-right capsule-arrow"></i>
+          <span class="capsule-step"><i class="ph-bold ph-chat-teardrop-text"></i> Assistant</span>
+        </div>
+      </div>
+
+      <div class="navbar-right">
+        <div class="model-badge hide-on-mobile" id="modelBadge" title="Active LLM Engine">
+          <i class="ph-bold ph-cpu"></i>
+          <span id="modelName">gpt-5.6-luna</span>
+        </div>
+
+        <button class="nav-btn ripple-btn" id="soundToggleBtn" title="Toggle Sound Feedback">
+          <i class="ph-bold ph-speaker-high" id="soundIcon"></i>
+        </button>
+
+        <button class="nav-btn ripple-btn" id="openToolsBtn" title="Open Tool Explorer">
+          <i class="ph-bold ph-cube"></i>
+          <span class="hide-on-mobile">Tools</span>
+        </button>
+
+        <button class="nav-btn ripple-btn" id="openArchitectureBtn" title="Architecture & About">
+          <i class="ph-bold ph-info"></i>
+        </button>
+
+        <a href="/api/docs" target="_blank" rel="noreferrer" class="nav-btn ripple-btn" title="FastAPI Interactive Docs">
+          <i class="ph-bold ph-code"></i>
+          <span class="hide-on-mobile">API</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Workspace -->
+    <main class="chat-workspace">
+      
+      <!-- Chat Messages Scroll Container -->
+      <section class="messages-container" id="messagesContainer">
+        
+        <!-- Welcome Hero Banner (Hidden once chat starts) -->
+        <div class="welcome-hero" id="welcomeHero">
+          <div class="hero-badge">
+            <i class="ph-bold ph-lightning"></i>
+            <span>Intelligent Tool-Equipped Agent</span>
+          </div>
+          
+          <h2 class="hero-heading">What can I calculate or solve for you today?</h2>
+          <p class="hero-description">
+            Ask any natural query. The agent dynamically decides whether to calculate complex arithmetic, generate cryptographic keys, or fetch system time — delivering synthesized answers in real time.
+          </p>
+
+          <!-- Quick Action Prompt Chips -->
+          <div class="prompt-chips-wrapper">
+            <div class="prompt-chips-label">
+              <i class="ph-bold ph-cursor-click"></i> Try a sample prompt:
+            </div>
+            <div class="prompt-chips-grid">
+              <button class="prompt-chip ripple-btn" data-prompt="Calculate (450 * 12) + (1024 / 4)">
+                <div class="chip-icon math-icon"><i class="ph-bold ph-calculator"></i></div>
+                <div class="chip-content">
+                  <span class="chip-title">Math & Arithmetic</span>
+                  <span class="chip-query">(450 * 12) + (1024 / 4)</span>
+                </div>
+              </button>
+
+              <button class="prompt-chip ripple-btn" data-prompt="Generate a secure 24-character password">
+                <div class="chip-icon sec-icon"><i class="ph-bold ph-shield-check"></i></div>
+                <div class="chip-content">
+                  <span class="chip-title">Security Key</span>
+                  <span class="chip-query">Secure 24-char password</span>
+                </div>
+              </button>
+
+              <button class="prompt-chip ripple-btn" data-prompt="What is the current date and local time?">
+                <div class="chip-icon time-icon"><i class="ph-bold ph-clock"></i></div>
+                <div class="chip-content">
+                  <span class="chip-title">System Clock</span>
+                  <span class="chip-query">Current date & time</span>
+                </div>
+              </button>
+
+              <button class="prompt-chip ripple-btn" data-prompt="Calculate 2 ** 16 - 1">
+                <div class="chip-icon math-icon"><i class="ph-bold ph-function"></i></div>
+                <div class="chip-content">
+                  <span class="chip-title">Powers & Logic</span>
+                  <span class="chip-query">2 ** 16 - 1</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Message List -->
+        <div class="messages-list" id="messagesList"></div>
+
+        <!-- Thinking Pipeline Wave Placeholder -->
+        <div class="thinking-bubble-wrapper hidden" id="thinkingIndicator">
+          <div class="bot-avatar-pulse">
+            <i class="ph-bold ph-sparkle"></i>
+          </div>
+          <div class="thinking-card glass-card">
+            <div class="thinking-header">
+              <span class="thinking-step-name" id="thinkingStepText">AI Planner analyzing intent...</span>
+              <div class="pulsing-wave">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="thinking-progress-bar">
+              <div class="progress-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Chat Input Dock -->
+      <footer class="input-dock-container">
+        <div class="input-dock glass-card">
+          
+          <!-- Suggested Quick Action Pills (Compact) -->
+          <div class="input-pills-bar" id="inputPillsBar">
+            <button class="mini-pill ripple-btn" data-prompt="Calculate 999 * 888">
+              <i class="ph-bold ph-calculator"></i> 999 * 888
+            </button>
+            <button class="mini-pill ripple-btn" data-prompt="Generate a 20 character password">
+              <i class="ph-bold ph-shield-check"></i> 20-char password
+            </button>
+            <button class="mini-pill ripple-btn" data-prompt="What time is it right now?">
+              <i class="ph-bold ph-clock"></i> Current time
+            </button>
+            <button class="mini-pill ripple-btn" data-prompt="Calculate (100 / 4) ** 2">
+              <i class="ph-bold ph-calculator"></i> (100 / 4) ** 2
+            </button>
+          </div>
+
+          <!-- Input Area -->
+          <form class="chat-form" id="chatForm">
+            <div class="input-wrapper">
+              <textarea
+                id="userInput"
+                rows="1"
+                placeholder="Ask anything... (e.g., 'Calculate 145 * 24', 'Generate a strong password')"
+                autocomplete="off"
+                spellcheck="false"
+              ></textarea>
+              <div class="input-actions-left">
+                <button type="button" class="action-circle-btn ripple-btn" id="clearChatBtn" title="Clear conversation history">
+                  <i class="ph-bold ph-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="send-btn ripple-btn" id="sendBtn" title="Send message (Enter)">
+              <span class="send-btn-content">
+                <span class="send-text hide-on-mobile">Send</span>
+                <i class="ph-bold ph-paper-plane-tilt send-icon"></i>
+              </span>
+              <div class="send-btn-glow"></div>
+            </button>
+          </form>
+
+          <div class="input-footer-meta">
+            <span>Press <kbd>Enter</kbd> to send, <kbd>Shift + Enter</kbd> for line break</span>
+            <span class="meta-separator">•</span>
+            <span>Planner ➔ Tool ➔ Assistant Pipeline</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Slide-out Drawer: Tool Explorer & Playground -->
+  <div class="drawer-overlay" id="toolsDrawerOverlay">
+    <aside class="drawer-panel glass-card" id="toolsDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title">
+          <i class="ph-bold ph-cube drawer-title-icon"></i>
+          <div>
+            <h3>Tool Explorer & Playground</h3>
+            <p>Inspect active agent capabilities or execute tools directly</p>
+          </div>
+        </div>
+        <button class="close-drawer-btn ripple-btn" id="closeToolsDrawerBtn">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        
+        <!-- Tools List Tabs -->
+        <div class="tool-cards-list" id="toolCardsList">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Direct Tool Playground Execution Box -->
+        <div class="playground-section glass-card">
+          <div class="playground-header">
+            <i class="ph-bold ph-terminal-window"></i>
+            <h4>Direct Tool Test Runner</h4>
+          </div>
+          <p class="playground-desc">Execute any registered tool directly without LLM planning to test raw functions.</p>
+
+          <div class="playground-form">
+            <div class="form-group">
+              <label for="playgroundToolSelect">Selected Tool</label>
+              <select id="playgroundToolSelect" class="form-select"></select>
+            </div>
+
+            <div class="form-group" id="playgroundArgsContainer">
+              <!-- Dynamically rendered inputs based on tool -->
+            </div>
+
+            <button type="button" class="playground-run-btn ripple-btn" id="runToolDirectBtn">
+              <i class="ph-bold ph-play"></i> Run Tool Directly
+            </button>
+          </div>
+
+          <div class="playground-output-container hidden" id="playgroundOutputBox">
+            <div class="playground-output-header">
+              <span>Execution Output</span>
+              <span class="exec-latency" id="playgroundLatency">0ms</span>
+            </div>
+            <pre class="playground-output-pre" id="playgroundOutputPre"></pre>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal: Architecture & About -->
+  <div class="modal-backdrop" id="archModalBackdrop">
+    <div class="modal-dialog glass-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge">
+            <i class="ph-bold ph-tree-structure"></i>
+          </div>
+          <div>
+            <h3>System Architecture</h3>
+            <p>Planner ➔ Tool ➔ Assistant Workflow</p>
+          </div>
+        </div>
+        <button class="modal-close-btn ripple-btn" id="closeArchModalBtn">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="diagram-flow">
+          <div class="flow-card">
+            <div class="flow-badge user-badge">1. User Query</div>
+            <h4>User Prompt</h4>
+            <p>Receives natural language instruction from the user.</p>
+          </div>
+          
+          <div class="flow-connector"><i class="ph-bold ph-arrow-down"></i></div>
+
+          <div class="flow-card">
+            <div class="flow-badge planner-badge">2. Planner (LLM)</div>
+            <h4>Tool Selection & Parsing</h4>
+            <p>Evaluates prompt against tool registry and returns strictly formatted JSON with the selected tool & extracted arguments.</p>
+          </div>
+
+          <div class="flow-connector"><i class="ph-bold ph-arrow-down"></i></div>
+
+          <div class="flow-card">
+            <div class="flow-badge tool-badge">3. Tool Execution</div>
+            <h4>Deterministic Execution</h4>
+            <p>Locally executes safe math AST parser, secure password generator, or system clock.</p>
+          </div>
+
+          <div class="flow-connector"><i class="ph-bold ph-arrow-down"></i></div>
+
+          <div class="flow-card">
+            <div class="flow-badge assistant-badge">4. Assistant (LLM)</div>
+            <h4>Natural Synthesis</h4>
+            <p>LLM receives the user prompt, tool name, and raw result to formulate a friendly, conversational final answer.</p>
+          </div>
+        </div>
+
+        <div class="deployment-notes">
+          <h4><i class="ph-bold ph-rocket-launch"></i> Production Ready Deployment</h4>
+          <p>Built with high-performance FastAPI ASGI backend, single-command Dockerization, and seamless deployment on Render, Railway, Fly.io, or VPS.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Script -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
