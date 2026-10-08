@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function showToast(message, type = "info") {
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
-    
+
     let icon = "ph-info";
     if (type === "success") icon = "ph-check-circle";
     if (type === "error") icon = "ph-warning-circle";
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
           modelNameEl.textContent = health.model;
         }
         if (systemStatusText) {
-          systemStatusText.textContent = "Online • Ready";
+          systemStatusText.textContent = "Online";
         }
       }
 
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ tool: toolName, arguments: args })
         });
         const json = await res.json();
-        
+
         playgroundOutputBox.classList.remove("hidden");
         playgroundLatency.textContent = `${json.duration_ms || 0}ms`;
         playgroundOutputPre.textContent = JSON.stringify(json.result !== undefined ? json.result : json, null, 2);
